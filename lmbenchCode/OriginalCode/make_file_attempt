@@ -1,0 +1,168 @@
+# $Id$
+
+# Make targets:
+#
+# lmbench	[default] builds the benchmark suite for the current os/arch
+# results	builds, configures run parameters, and runs the benchmark
+# rerun		reruns the benchmark using the same parameters as last time
+# scaling	reruns the benchmark using same parameters as last time,
+#		except it asks what scaling value to use
+# hardware	reruns the hardware benchmarks using the same parameters
+# os		reruns the OS benchmarks using the same parameters
+# clean		cleans out sources and run configuration
+# clobber	clean and removes the bin directories
+# shar		obsolete, use cd .. && make shar
+# depend	builds make dependencies (needs gcc)
+# debug		builds all the benchmarks with '-g' debugging flag
+# assembler	builds the .s files for each benchmark
+#
+# This is largely self configuring.  Most stuff is pretty portable.  
+#
+# If you don't have gcc, try make CC=cc and see if that works.
+#
+# If you want to do cross-compilation try make OS=armv5tel-linux-gnu
+# or whatever your OS string should be in the target environment.
+# Since many embedded development environments also have a special
+# cross-compiler, you might want to also select a particular compiler,
+# so your build command would look something like:
+#	make OS=armv5tel-linux-gnu CC=gcc-arm
+#
+# Overriding the OS and CC make parameters needs to be done as an
+# argument to make, not as an environment variable.  See above comments.
+#
+
+# I finally know why Larry Wall's Makefile says "Grrrr".
+SHELL=/bin/sh
+
+CC=/home/shadiclink/rocket/chipyard-clean/riscv-tools-install/bin/riscv64-unknown-elf-gcc
+MAKE=`../scripts/make`
+AR=/home/shadiclink/rocket/chipyard-clean/riscv-tools-install/bin/riscv64-unknown-elf-ar
+ARCREATE=cr
+
+# base of installation location
+BASE=/usr/local
+O= ../bin/riscv-lmbench
+D= ../doc
+TRUE=/bin/true
+OS=`riscv-linux`
+TARGET=`../scripts/target`
+BINDIR=../bin/$(OS)
+CONFIG=../bin/$(OS)/`../scripts/config`
+UTILS=../scripts/target ../scripts/os ../scripts/gnu-os ../scripts/compiler \
+	../scripts/info ../scripts/info-template ../scripts/version \
+	../scripts/config ../scripts/config-run ../scripts/results \
+	../scripts/lmbench ../scripts/make ../scripts/build
+INSTALL=cp
+RESULTS=Results/$(OS)
+SAMPLES=lmbench/Results/aix/rs6000 lmbench/Results/hpux/snake \
+	lmbench/Results/irix/indigo2 lmbench/Results/linux/pentium \
+	lmbench/Results/osf1/alpha lmbench/Results/solaris/ss20* 
+
+CPPFLAGS:=$(CPPFLAGS) -I/home/shadiclink/rocket/chipyard-clean/riscv-tools-install/sysroot/usr/include -I/usr/include/tirpc
+CFLAGS := -O2 -std=gnu11 -Wall -specs=htif_nano.specs
+COMPILE=$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
+
+INCS =	bench.h lib_mem.h lib_tcp.h lib_udp.h stats.h timing.h
+
+SRCS =  bw_file_rd.c bw_mem.c bw_mmap_rd.c bw_pipe.c bw_tcp.c bw_udp.c	\
+	bw_unix.c							\
+	cache.c clock.c disk.c enough.c flushdisk.c getopt.c hello.c	\
+	lat_connect.c lat_ctx.c	lat_fcntl.c lat_fifo.c lat_fs.c 	\
+	lat_mem_rd.c lat_mmap.c lat_ops.c lat_pagefault.c lat_pipe.c 	\
+	lat_proc.c lat_rpc.c lat_select.c lat_sig.c lat_syscall.c	\
+	lat_tcp.c lat_udp.c lat_unix.c lat_unix_connect.c lat_sem.c	\
+	lat_usleep.c lat_pmake.c  					\
+	lib_debug.c lib_mem.c lib_stats.c lib_tcp.c lib_timing.c 	\
+	lib_udp.c lib_unix.c lib_sched.c				\
+	line.c lmdd.c lmhttp.c par_mem.c par_ops.c loop_o.c memsize.c 	\
+	mhz.c msleep.c rhttp.c seek.c timing_o.c tlb.c stream.c		\
+	bench.h lib_debug.h lib_tcp.h lib_udp.h lib_unix.h names.h 	\
+	stats.h timing.h version.h
+
+ASMS =  $O/bw_file_rd.s $O/bw_mem.s $O/bw_mmap_rd.s $O/bw_pipe.s 	\
+	$O/bw_tcp.s $O/bw_udp.s $O/bw_unix.s $O/clock.s			\
+	$O/disk.s $O/enough.s $O/flushdisk.s $O/getopt.s $O/hello.s	\
+	$O/lat_connect.s $O/lat_ctx.s lat_fcntl.s $O/lat_fifo.s		\
+	$O/lat_fs.s $O/lat_mem_rd.s $O/lat_mmap.s $O/lat_ops.s		\
+	$O/lat_pagefault.s $O/lat_pipe.s $O/lat_proc.s $O/lat_rpc.s	\
+	$O/lat_select.s $O/lat_sig.s $O/lat_syscall.s $O/lat_tcp.s	\
+	$O/lat_udp.s $O/lat_unix.s $O/lat_unix_connect.s $O/lat_sem.s	\
+	$O/lib_debug.s $O/lib_mem.s	\
+	$O/lib_stats.s $O/lib_tcp.s $O/lib_timing.s $O/lib_udp.s	\
+	$O/lib_unix.s $O/lib_sched.s					\
+	$O/line.s $O/lmdd.s $O/lmhttp.s $O/par_mem.s	\
+	$O/par_ops.s $O/loop_o.s $O/memsize.s $O/mhz.s $O/msleep.s	\
+	$O/rhttp.s $O/timing_o.s $O/tlb.s $O/stream.s			\
+	$O/cache.s $O/lat_dram_page.s $O/lat_pmake.s $O/lat_rand.s	\
+	$O/lat_usleep.s $O/lat_cmd.s
+EXES =	$O/bw_file_rd $O/bw_mem $O/bw_mmap_rd $O/bw_pipe $O/bw_tcp 	\
+	$O/bw_unix $O/hello						\
+	$O/lat_select $O/lat_pipe $O/lat_rpc $O/lat_syscall $O/lat_tcp	\
+	$O/lat_udp $O/lat_mmap $O/mhz $O/lat_proc $O/lat_pagefault	\
+	$O/lat_connect $O/lat_fs $O/lat_sig $O/lat_mem_rd $O/lat_ctx	\
+	$O/lat_sem 							\
+	$O/memsize $O/lat_unix $O/lmdd $O/timing_o $O/enough		\
+	$O/msleep $O/loop_o $O/lat_fifo $O/lmhttp $O/lat_http		\
+	$O/lat_fcntl $O/disk $O/lat_unix_connect $O/flushdisk		\
+	$O/lat_ops $O/line $O/tlb $O/par_mem $O/par_ops 		\
+	$O/stream
+OPT_EXES=$O/cache $O/lat_dram_page $O/lat_pmake $O/lat_rand 		\
+	$O/lat_usleep $O/lat_cmd
+LIBOBJS= $O/lib_tcp.o $O/lib_udp.o $O/lib_unix.o $O/lib_timing.o 	\
+	$O/lib_mem.o $O/lib_stats.o $O/lib_debug.o $O/getopt.o		\
+	$O/lib_sched.o
+
+
+.PHONY: lmbench results rerun hardware os install all Wall debug \
+	install install-target dist get edit get-e clean clobber \
+	share depend testmake
+$O/lmbench.riscv: $(LIBOBJS)
+	/bin/rm -f $O/lmbench.riscv
+	$(AR) $(ARCREATE) $O/lmbench.riscv $(LIBOBJS)
+	-ranlib $O/lmbench.riscv
+$O/lib_timing.o : lib_timing.c $(INCS)
+	$(COMPILE) -c lib_timing.c -o $O/lib_timing.o
+$O/lib_mem.o : lib_mem.c $(INCS)
+	$(COMPILE) -c lib_mem.c -o $O/lib_mem.o
+$O/lib_tcp.o : lib_tcp.c $(INCS)
+	$(COMPILE) -c lib_tcp.c -o $O/lib_tcp.o
+$O/lib_udp.o : lib_udp.c $(INCS)
+	$(COMPILE) -c lib_udp.c -o $O/lib_udp.o
+$O/lib_unix.o : lib_unix.c $(INCS)
+	$(COMPILE) -c lib_unix.c -o $O/lib_unix.o
+$O/lib_debug.o : lib_debug.c $(INCS)
+	$(COMPILE) -c lib_debug.c -o $O/lib_debug.o
+$O/lib_stats.o : lib_stats.c $(INCS)
+	$(COMPILE) -c lib_stats.c -o $O/lib_stats.o
+$O/lib_sched.o : lib_sched.c $(INCS)
+	$(COMPILE) -c lib_sched.c -o $O/lib_sched.o
+$O/getopt.o : getopt.c $(INCS)
+	$(COMPILE) -c getopt.c -o $O/getopt.o
+
+$O/mhz.s: mhz.c timing.h stats.h bench.h
+$O/mhz.riscv: mhz.c timing.h stats.h bench.h $O/lmbench.riscv
+	$(COMPILE) -o $O/mhz.riscv $O/lmbench.riscv $(LDLIBS) -lm
+
+$O/bw_file_rd.s:bw_file_rd.c timing.h stats.h bench.h
+$O/bw_file_rd.riscv:  bw_file_rd.c timing.h stats.h bench.h $O/lmbench.riscv
+	$(COMPILE) -o $O/bw_file_rd.riscv bw_file_rd.c $O/lmbench.riscv $(LDLIBS)
+
+$O/bw_mem.s:bw_mem.c timing.h stats.h bench.h
+$O/bw_mem:  bw_mem.c timing.h stats.h bench.h $O/lmbench.riscv
+	$(COMPILE) -o $O/bw_mem bw_mem.c $O/lmbench.riscv $(LDLIBS)
+
+$O/hello.s:hello.c
+$O/hello.riscv:  hello.c $O/lmbench.riscv
+	$(COMPILE) -o $O/hello hello.riscv $O/lmbench.riscv $(LDLIBS)
+
+$O/line.s:  line.c timing.h stats.h bench.h
+$O/line.riscv:  line.c timing.h stats.h bench.h $O/lmbench.riscv
+	$(COMPILE) -o $O/line.riscv line.riscv $O/lmbench.riscv $(LDLIBS)
+
+$O/tlb.s:tlb.c timing.h stats.h bench.h
+$O/tlb.riscv:  tlb.c timing.h stats.h bench.h $O/lmbench.riscv
+	$(COMPILE) -o $O/tlb.riscv tlb.riscv $O/lmbench.riscv $(LDLIBS)
+
+$O/cache.s:cache.c timing.h stats.h bench.h
+$O/cache.riscv:  cache.c timing.h stats.h bench.h $O/lmbench.riscv
+	$(COMPILE) -o $O/cache.riscv cache.c $O/lmbench.riscv $(LDLIBS)
