@@ -1,7 +1,7 @@
 # lmbench suite on rocket and boom core
-#nsrilalith
-#Final Project ECE5504 Submission
-#Group 8
+# nsrilalith
+# Final Project ECE5504 Submission
+# Group 8
 
 ## Name
 custom lmbench suite for calculating bandwidth and latency on RiscV Rocket and Boom Cores
