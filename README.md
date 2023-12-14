@@ -17,6 +17,6 @@ I have also included an excell sheet with calculated resutls if interested.
 
 ## To Run in own environment
 If you want to run in your own environment:
-You will need chipyard completely setup. You can use my simulator files if possible, but you're better off excecuting the same I have used which are available in configs available in https://code.vt.edu/ece5504_f23/chipyard-clean. Just change the binary to the bwidth_read4.risv you generate.
+You will need chipyard completely setup. You can use my simulator files if possible, but you're better off excecuting the same configurations I have used which are available in configs available in https://code.vt.edu/ece5504_f23/chipyard-clean. Just change the binary to the bwidth_read4.risv you generate.
 
 
