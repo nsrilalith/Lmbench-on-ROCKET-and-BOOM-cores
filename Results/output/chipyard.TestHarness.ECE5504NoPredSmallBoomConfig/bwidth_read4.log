@@ -1,0 +1,92 @@
+[UART] UART0 is here (stdin/stdout).
+Measuring bandwidth read for different sizes:
+
+4MB:
+            cycles : 5498
+           instret : 1065
+             loads : 0
+            stores : 0
+           I$ miss : 3
+   D$ regular miss : 14
+  D$ prefetch miss : 0
+        D$ release : 20
+         ITLB miss : 0
+         DTLB miss : 0
+       L2 TLB miss : 0
+          branches : 0
+       mispredicts : 0
+load-use interlock : 0
+        I$ blocked : 0
+        D$ blocked : 0
+
+8MB:
+            cycles : 123477
+           instret : 43560
+             loads : 0
+            stores : 0
+           I$ miss : 46
+   D$ regular miss : 159
+  D$ prefetch miss : 0
+        D$ release : 210
+         ITLB miss : 0
+         DTLB miss : 0
+       L2 TLB miss : 0
+          branches : 0
+       mispredicts : 0
+load-use interlock : 0
+        I$ blocked : 0
+        D$ blocked : 0
+
+16MB:
+            cycles : 241410
+           instret : 86275
+             loads : 0
+            stores : 0
+           I$ miss : 47
+   D$ regular miss : 277
+  D$ prefetch miss : 0
+        D$ release : 395
+         ITLB miss : 0
+         DTLB miss : 0
+       L2 TLB miss : 0
+          branches : 0
+       mispredicts : 0
+load-use interlock : 0
+        I$ blocked : 0
+        D$ blocked : 0
+
+32MB:
+            cycles : 359105
+           instret : 128970
+             loads : 0
+            stores : 0
+           I$ miss : 47
+   D$ regular miss : 397
+  D$ prefetch miss : 0
+        D$ release : 579
+         ITLB miss : 0
+         DTLB miss : 0
+       L2 TLB miss : 0
+          branches : 0
+       mispredicts : 0
+load-use interlock : 0
+        I$ blocked : 0
+        D$ blocked : 0
+
+64MB:
+            cycles : 477036
+           instret : 171702
+             loads : 0
+            stores : 0
+           I$ miss : 47
+   D$ regular miss : 512
+  D$ prefetch miss : 0
+        D$ release : 762
+         ITLB miss : 0
+         DTLB miss : 0
+       L2 TLB miss : 0
+          branches : 0
+       mispredicts : 0
+load-use interlock : 0
+        I$ blocked : 0
+        D$ blocked : 0
