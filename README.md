@@ -1,4 +1,4 @@
-# lmbench suite on rocket and boom core
+# RISC-V ROCKET and BOOM Micro-architecture Performance Analysis Using lmbench Microbench Suites
 # nsrilalith
 # Final Project ECE5504 Submission
 # Group 8
