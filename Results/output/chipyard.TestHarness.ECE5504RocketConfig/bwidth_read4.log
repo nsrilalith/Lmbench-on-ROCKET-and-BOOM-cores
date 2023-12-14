@@ -1,0 +1,92 @@
+[UART] UART0 is here (stdin/stdout).
+Measuring bandwidth read for different sizes:
+
+4MB:
+            cycles : 6329
+           instret : 3389
+             loads : 1521
+            stores : 109
+           I$ miss : 5
+   D$ regular miss : 16
+  D$ prefetch miss : 0
+        D$ release : 65
+         ITLB miss : 0
+         DTLB miss : 0
+       L2 TLB miss : 0
+          branches : 1492
+       mispredicts : 35
+load-use interlock : 1538
+        I$ blocked : 173
+        D$ blocked : 716
+
+8MB:
+            cycles : 144271
+           instret : 69216
+             loads : 23827
+            stores : 6028
+           I$ miss : 625
+   D$ regular miss : 177
+  D$ prefetch miss : 0
+        D$ release : 1969
+         ITLB miss : 0
+         DTLB miss : 0
+       L2 TLB miss : 0
+          branches : 21406
+       mispredicts : 1222
+load-use interlock : 21600
+        I$ blocked : 26827
+        D$ blocked : 8159
+
+16MB:
+            cycles : 281319
+           instret : 136012
+             loads : 46452
+            stores : 12035
+           I$ miss : 1233
+   D$ regular miss : 310
+  D$ prefetch miss : 0
+        D$ release : 3841
+         ITLB miss : 0
+         DTLB miss : 0
+       L2 TLB miss : 0
+          branches : 41639
+       mispredicts : 2418
+load-use interlock : 41963
+        I$ blocked : 52710
+        D$ blocked : 14358
+
+32MB:
+            cycles : 419325
+           instret : 202872
+             loads : 69071
+            stores : 18062
+           I$ miss : 1841
+   D$ regular miss : 446
+  D$ prefetch miss : 0
+        D$ release : 5722
+         ITLB miss : 0
+         DTLB miss : 0
+       L2 TLB miss : 0
+          branches : 61866
+       mispredicts : 3571
+load-use interlock : 62340
+        I$ blocked : 78750
+        D$ blocked : 20629
+
+64MB:
+            cycles : 556358
+           instret : 269670
+             loads : 91659
+            stores : 24089
+           I$ miss : 2449
+   D$ regular miss : 589
+  D$ prefetch miss : 0
+        D$ release : 7592
+         ITLB miss : 0
+         DTLB miss : 0
+       L2 TLB miss : 0
+          branches : 82062
+       mispredicts : 4699
+load-use interlock : 82578
+        I$ blocked : 104795
+        D$ blocked : 27180
